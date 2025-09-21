@@ -1,0 +1,123 @@
+from datetime import datetime
+
+
+expenses = [] #Global list is used because its easy to store data in it. and all the data will be in one place.
+
+#Start of Add expence logic/function
+
+def add_expense():
+    try: #runs program inside it, if error occurs, program goes to except condition and show error, instead of breaking the whole program. 
+        #program gets safe in this way.
+        amount = float(input("Enter expense amount: "))
+        category = input("Enter category (e.g., Food, Travel, Bills): ").strip() #strip removes any whitespaces from the line. 
+        description = input("Enter description: ").strip()
+        date = input("Enter date (YYYY-MM-DD) or leave blank for today: ").strip()
+
+        if not date:
+            date = datetime.today().strftime("%Y-%m-%d")
+
+        expense = {
+            "amount": amount,
+            "category": category,
+            "description": description,
+            "date": date
+        }
+        expenses.append(expense) #append adds the value to the end of the list. its a list method. 
+        print("Expense added successfully!\n")
+
+    except ValueError:
+        print("Invalid input! Amount must be a number.\n") # \n is used to break the line and start text from next line.
+
+# Add expence login/code is complete 
+
+
+#Start of view expence logic/code
+
+def view_expenses():
+    if not expenses:
+        print("📭 No expenses recorded yet.\n")
+        return
+
+    print("\n--- All Expenses ---")
+    for i, exp in enumerate(expenses, start=1): #i = the index number (1, 2, 3 …).
+                                                #exp = the expense dictionary from the list.
+                                                #enumerate gives the index number as well along with value.
+                                                #Start = 1, tells enumerate to start counting from 1 not from 0.
+
+        print(f"{i}. {exp['date']} | {exp['category']} | {exp['description']} | ${exp['amount']:.2f}")
+    print()
+
+    #End of view expence logic.
+
+    #Start of search expence logic
+
+def search_expenses():
+    keyword = input("Enter category or keyword to search: ").lower() #input into lower letters 
+    results = [exp for exp in expenses 
+               if keyword in exp['category'].lower() or keyword in exp['description'].lower()]
+
+    if not results:
+        print("No matching expenses found.\n")
+        return
+
+    print("\n--- Search Results ---")
+    for exp in results:
+        print(f"{exp['date']} | {exp['category']} | {exp['description']} | ${exp['amount']:.2f}") #2f is used to format number, keep 2 decimal places after point
+    print()
+
+    #search expence logic ends here
+
+    #total expnce logic start
+
+def total_expenses():
+     total = sum(exp['amount'] for exp in expenses)
+     print(f"Total Expenses: ${total:.2f}\n")
+
+    #start of heightest expence logic 
+
+def highest_expense():
+      if not expenses:
+        print("No expenses recorded yet.\n")
+        return
+      highest = max(expenses, key=lambda x: x['amount']) #search for hightest value through max. 
+                                                        #max complares each amount in each expence and finds the largest one. 
+      print(f"Highest Expense: {highest['category']} | {highest['description']} | ${highest['amount']:.2f} on {highest['date']}\n")
+
+
+
+# ----------------------------
+# Main Menu
+# ----------------------------
+def menu():
+    while True:
+        print("===== Personal Expense Tracker =====")
+        print("1. Add Expense")
+        print("2. View Expenses")
+        print("3. Search Expenses")
+        print("4. Total Expenses")
+        print("5. Highest Expense")
+        print("6. Exit")
+
+        choice = input("Choose an option (1-6): ")
+
+        if choice == "1":
+            add_expense()
+        elif choice == "2":
+            view_expenses()
+        elif choice == "3":
+            search_expenses()
+        elif choice == "4":
+            total_expenses()
+        elif choice == "5":
+            highest_expense()
+        elif choice == "6":
+            print("Exiting Expense Tracker. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please select 1-6.\n")
+
+
+# Run program
+if __name__ == "__main__": #Only run the following code if this file is executed directly, not when imported.
+    menu() #Run the menu() function only when I start this expense tracker program directly.
+
